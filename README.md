@@ -53,6 +53,11 @@ Integrations return `503` when their credentials are absent. Never commit real e
 
 ## Deploy to Vercel and Render
 
+### Live deployments
+
+- Frontend: https://northstar-k31xrh5yl-sushanths-projects-14c4fbd8.vercel.app
+- API: https://cognevance-enterprise-e-commerce.onrender.com
+
 The repository includes [`client/vercel.json`](client/vercel.json) for the Vite dashboard and [`render.yaml`](render.yaml) for the API. MongoDB must be hosted separately; MongoDB Atlas is suitable. Deployments require access to the GitHub repository and an Atlas connection URI.
 
 1. Create an Atlas database and database user. Configure network access so the Render service can reach the cluster. Keep the connection URI private.

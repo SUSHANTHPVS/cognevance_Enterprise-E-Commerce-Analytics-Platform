@@ -1,0 +1,2 @@
+Frontend: https://northstar-k31xrh5yl-sushanths-projects-14c4fbd8.vercel.app
+API: https://cognevance-enterprise-e-commerce.onrender.com
