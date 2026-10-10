@@ -3,6 +3,7 @@ services:
     name: northstar-commerce-api
     runtime: node
     plan: free
+    rootDir: .
     buildCommand: npm ci && npm run build
     startCommand: npm start
     healthCheckPath: /api/health

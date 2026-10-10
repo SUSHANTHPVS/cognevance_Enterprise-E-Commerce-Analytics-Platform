@@ -65,6 +65,8 @@ Configure optional Render variables for Stripe (`STRIPE_SECRET_KEY`, `STRIPE_WEB
 
 The Render free web service may spin down when idle, causing a cold start. Use an always-on plan and managed production database settings for production traffic. Vercel and Render deploy from GitHub when the configured branch receives a push.
 
+If Render logs `load build definition from Dockerfile`, the service is configured as Docker instead of the Node Blueprint. Use the Blueprint above with the repository root (`.`) as `rootDir`, or, if intentionally using Docker, set Docker Context to `.` and Dockerfile Path to `server/Dockerfile`. Do not set the context/root directory to `server/`: the Dockerfile builds the npm workspaces from the repository root.
+
 The frontend reads `VITE_API_BASE_URL` at build time; the example value is in [`client/.env.example`](client/.env.example). Never commit real credentials.
 
 ### Local container stack
