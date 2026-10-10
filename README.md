@@ -51,11 +51,21 @@ The build typechecks both applications, produces `client/dist`, and compiles the
 
 Integrations return `503` when their credentials are absent. Never commit real environment values.
 
-## Deployment
+## Deploy to Vercel and Render
 
-No cloud account or deployment credentials are connected in this workspace, so there is no live deployment URL yet. For a production deployment, provision a managed MongoDB replica set, deploy the Node API on a container or Node hosting service, and publish `client/dist` to a static host/CDN. Configure TLS, environment variables, Stripe webhooks, the S3 bucket policy/CDN, and the production CORS origin before exposing the API. Set health checks to `/api/health`; run multiple stateless API instances behind a load balancer and use the managed database and object store for shared state.
+The repository includes [`client/vercel.json`](client/vercel.json) for the Vite dashboard and [`render.yaml`](render.yaml) for the API. MongoDB must be hosted separately; MongoDB Atlas is suitable. Deployments require access to the GitHub repository and an Atlas connection URI.
 
-For a GitHub repository link, initialize/push this folder to a repository in your GitHub account after reviewing the files and environment settings. This workspace has not been pushed to GitHub.
+1. Create an Atlas database and database user. Configure network access so the Render service can reach the cluster. Keep the connection URI private.
+2. In Render, create a **Blueprint** from this GitHub repository and apply `render.yaml`. Set `MONGODB_URI` to the Atlas URI. Set `CLIENT_ORIGIN` temporarily to `http://localhost:5173`; replace it with the Vercel production origin after the frontend deploys. Render generates `JWT_SECRET` for the API.
+3. In Vercel, import the same GitHub repository and set **Root Directory** to `client`. Add the environment variable `VITE_API_BASE_URL` with the Render service URL plus `/api`, for example `https://northstar-commerce-api.onrender.com/api`, then deploy.
+4. Copy the Vercel production origin (for example, `https://your-project.vercel.app`) into the Render service's `CLIENT_ORIGIN`. For Vercel preview deployments, add each allowed preview origin as a comma-separated value. Save the Render variable and redeploy.
+5. Verify `https://<render-service>.onrender.com/api/health` returns `{"status":"ok","database":"connected"}`. Open the Vercel URL and use **Connect** with a staff/admin account. Public registration creates customers; promote the first admin using the MongoDB command in the local setup section.
+
+Configure optional Render variables for Stripe (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`), SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`), and S3 images (`AWS_REGION`, `AWS_S3_BUCKET`, `ASSETS_BASE_URL`). Set Stripe's webhook endpoint to `https://<render-service>.onrender.com/api/payments/webhook`.
+
+The Render free web service may spin down when idle, causing a cold start. Use an always-on plan and managed production database settings for production traffic. Vercel and Render deploy from GitHub when the configured branch receives a push.
+
+The frontend reads `VITE_API_BASE_URL` at build time; the example value is in [`client/.env.example`](client/.env.example). Never commit real credentials.
 
 ### Local container stack
 

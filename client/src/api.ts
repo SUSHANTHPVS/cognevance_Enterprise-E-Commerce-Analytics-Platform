@@ -1,4 +1,4 @@
-const apiBase = '/api'
+const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '')
 
 export type ApiSession = {
   token: string
